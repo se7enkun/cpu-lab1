@@ -30,10 +30,10 @@ module MREQ (
                 // 根据字节偏移量offset，分别使用ram_wop、ram_wdata产生da_wen、da_wdata
                 da_wen = ram_wop << offset;
                 case (offset)
-                    2'b01  : da_wdata = {16'h0, ram_wdata[7:0],  8'h0};
-                    2'b10  : da_wdata = { 8'h0, ram_wdata[7:0], 16'h0};
+                    2'b01  : da_wdata = {{16{ram_wdata[7]}}, ram_wdata[7:0],  8'h0};
+                    2'b10  : da_wdata = {{ 8{ram_wdata[7]}}, ram_wdata[7:0], 16'h0};
                     2'b11  : da_wdata = {       ram_wdata[7:0], 24'h0};
-                    default: da_wdata = {24'h0, ram_wdata[7:0]};
+                    default: da_wdata = {{24{ram_wdata[7]}}, ram_wdata[7:0]};
                 endcase
             end
             `RAM_WE_H: begin                            // sh
