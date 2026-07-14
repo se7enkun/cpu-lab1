@@ -1,5 +1,7 @@
 `timescale 1ns / 1ps
 
+`include "defines.vh"
+
 module NPC (
     input  wire [ 1:0]  op,
     input  wire [31:0]  pc,
@@ -15,6 +17,7 @@ module NPC (
     always @(*) begin
         case (op)
             `NPC_PC4: npc = pc4;
+            `NPC_JALR: npc = {offset[31:1], 1'b0};
             `NPC_BRA: npc = br ? pc + offset : pc4;
             `NPC_JMP: npc = pc + offset;
             default:  npc = pc4;
