@@ -1621,6 +1621,10 @@
 <h2 id="2">2. 了解测试框架</h2>
 <p>&emsp;&emsp;下面以WSL2虚拟机为例，介绍Trace测试框架使用方法。</p>
 <p>&emsp;&emsp;首先在桌面上打开wsl2distromanager，并启动comp2008虚拟机。</p>
+<div class="admonition info">
+<p class="admonition-title">如果是在T2612上课的同学</p>
+<p>&emsp;&emsp;在桌面上找到Debian虚拟机的快捷方式，双击即可启动虚拟机。</p>
+</div>
 <p>&emsp;&emsp;在虚拟机终端输入并执行下列命令，以拉取测试框架代码：</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nb">cd</span><span class="w"> </span>~<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://gitee.com/hitsz-cslab/cdp-tests.git
 </code></pre></div></td></tr></table></div>
@@ -1674,7 +1678,7 @@
 <p>把Vivado工程目录的 <code>src</code> / <code>rtl</code> 下的所有源文件拷贝到 <code>cdp-tests</code> / <code>mySoC</code> 目录。<strong>不要拷贝<code>ip</code>文件夹</strong>，也 <strong>不要拷贝IP核相关文件</strong>。</p>
 </li>
 <li>
-<p>如果使用WSL2虚拟机，在Windows下把源文件拷贝到虚拟机之后，有时会出现许多带有<code>Zone.Identifier</code>后缀的文件。这些文件需要全部删除，否则测试无法运行。删除方法是在文件资源管理器的搜索框搜索<code>Zone.Identifier</code>，然后快捷键 <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-a">A</kbd></span> 全选后删除。</p>
+<p>如果使用WSL2虚拟机，在Windows下拷贝源文件到虚拟机并刷新界面，有时会出现许多带有“<code>Zone.Identifier</code>”后缀的文件。这些文件需要全部删除，否则测试无法运行。删除方法是在文件资源管理器的搜索框搜索“<code>Zone.Identifier</code>”，然后快捷键 <span class="keys"><kbd class="key-control">Ctrl</kbd><span>+</span><kbd class="key-a">A</kbd></span> 全选后删除。</p>
 </li>
 <li>
 <p><strong>保证<code>mySoC</code>目录下的架构是<code>miniRV_SoC</code>（或<code>miniLA_SoC</code>）包含<code>cpu_top</code>，然后<code>cpu_top</code>包含<code>cpu_core</code>，且这些模块的模块名、实例名，以及<code>cpu_core</code>的接口信号均不要改动</strong>。课程提供的模板工程默认满足要求，不要改动。</p>
@@ -1699,7 +1703,7 @@
 <p class="admonition-title"><strong>Trace测试框架只会测试主存访问，不会测试外设访问</strong></p>
 <p>&emsp;&emsp;如果SoC通过了AXI Trace测试，但下板测试失败，则首先应排查Uncached访问和外设访问的实现是否存在问题。</p>
 </div>
-<p>&emsp;&emsp;Trace测试框架使用<code>cpu_core.v</code>末尾的两组Trace信号来获取待测试CPU的部分结构状态。其中，第一组带有<code>debug_wb_</code>前缀的信号用于获取写回寄存器的信息，第二组带有<code>debug_mem_</code>前缀的则用于获取写访存的信息。单周期CPU的demo工程已提前连接好两组Trace信号：</p>
+<p>&emsp;&emsp;Trace测试框架使用<code>cpu_core.v</code>文件末尾的两组Trace信号来获取待测试CPU的部分结构状态。第一组带有“<code>debug_wb_</code>”前缀的信号用于获取写回寄存器的信息，第二组带有“<code>debug_mem_</code>”前缀的则用于获取写访存的信息。单周期CPU的demo工程已提前连接好两组Trace信号：</p>
 <div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">cpu_core.v</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">252</span>
 <span class="normal">253</span>
 <span class="normal">254</span>
@@ -1810,17 +1814,17 @@
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>make<span class="w"> </span>run<span class="w"> </span><span class="nv">TEST</span><span class="o">=</span>sltu
 </code></pre></div></td></tr></table></div>
 <p><img alt="image-20210704013056368" src="../assets/trace-3.png" /></p>
-<p>&emsp;&emsp;打印出Test Point Pass之后，就代表这条指令测试通过了。</p>
+<p>&emsp;&emsp;打印出“Test Point Pass”之后，就代表该指令的测试用例通过了。</p>
 <p>&emsp;&emsp;如果发生了错误，就会打印如下所示的信息：</p>
 <p><img alt="image-20210704013210584" src="../assets/trace-4.png" /></p>
-<p>&emsp;&emsp;左栏为参照的正确实现，右栏为你实现的CPU给出的信号，通过比对这两组信号，你可以很快地确定错误发生在哪一条指令执行过程中，然后通过反汇编和波形的形式进行调试。</p>
+<p>&emsp;&emsp;在上图中，“REFERENCE”下的信号是正确实现的参考信号值，“MYCPU”下的则是待测试CPU给出的信号。比对这两组信号，可以快速确定错误是由哪一条指令执行时引起的，然后结合反汇编和仿真波形进行调试。</p>
 <h3 id="42">4.2 查看波形</h3>
 <p>&emsp;&emsp;运行某个测试之后，测试框架会在<code>waveform</code>文件夹下生成对应的.vcd波形文件。.vcd格式的波形文件可以使用GTKWave、Surfer等常用的波形查看器查看。</p>
 <p>&emsp;&emsp;打开桌面上的Surfer工具，然后直接把<code>waveform</code>文件夹下的.vcd波形文件拖拽到Surfer，如下图所示。</p>
 <p><center><img src = "../assets/trace-5.png" width = 600></center></p>
 <p>&emsp;&emsp;然后把<code>cdp-tests</code>目录下的.surf.ron格式的波形配置文件拖拽到Surfer，如下图所示。</p>
 <p><center><img src = "../assets/trace-6.png" width = 100%></center></p>
-<p>&emsp;&emsp;修改HDL代码并重新编译、重新运行测试后，只需点击左上角工具栏的刷新按钮，即可查看最新的波形，如下图所示。</p>
+<p>&emsp;&emsp;修改HDL代码并重新编译、重新运行测试后，只需点击Surfer左上角工具栏的刷新按钮，即可查看最新的波形，如下图所示。</p>
 <p><center><img src = "../assets/trace-7.png" width = 350></center></p>
 <p>&emsp;&emsp;更多Surfer工具的使用方法，请查看<a href="../surfer" target=_blank>附录D. Surfer使用指南</a>。</p>
 <h3 id="43">4.3 查看反汇编</h3>
